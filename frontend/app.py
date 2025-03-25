@@ -60,7 +60,7 @@ st.markdown("""
         }
         .bot-message {
             background-color: #E3E3E3;
-            text-align: right;
+            text-align: left;
             align-self: flex-end;  /* Keep bot message on the left */
         }
         .chat-box {
