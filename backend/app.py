@@ -1,12 +1,13 @@
-from fastapi import FastAPI, Request
-from fastapi.middleware.cors import CORSMiddleware
-import openai
+from fastapi import FastAPI, UploadFile, File
+import json
+from openai import OpenAI
 from process_pdf import extract_text_from_pdf
-from vector_store import save_embeddings, load_knowledge
 from config import OPENAI_API_KEY
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+# Enable CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,26 +16,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-openai.api_key = OPENAI_API_KEY
+client = OpenAI(api_key=OPENAI_API_KEY)
 
-# Extract text from PDF and store knowledge
-pdf_text = extract_text_from_pdf("user_data.pdf")
-save_embeddings(pdf_text)
+# Load user data
+with open("user_data.json", "r", encoding="utf-8") as f:
+    user_data = json.load(f)
 
 def generate_response(question):
-    """Generate AI response based on stored knowledge."""
-    knowledge = load_knowledge()
-    prompt = f"Based on this information: {knowledge}, answer this: {question}"
-    response = openai.ChatCompletion.create(
+    """Generate response using ChatGPT API."""
+    prompt = f"Based on this data: {user_data}, answer this: {question}"
+    response = client.Completion.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": prompt}]
+        prompt=prompt,
+        max_tokens=150
     )
-    return response["choices"][0]["message"]["content"]
+    return response.choices[0].text.strip()
 
 @app.post("/ask")
-async def ask(request: Request):
-    """Receive questions and return AI-generated responses."""
-    data = await request.json()
+async def ask(data: dict):
     question = data.get("question", "")
     answer = generate_response(question)
     return {"response": answer}
+
+@app.post("/upload-pdf")
+async def upload_pdf(file: UploadFile = File(...)):
+    text = extract_text_from_pdf(file.file)
+    with open("user_data.json", "w", encoding="utf-8") as f:
+        json.dump({"data": text}, f)
+    return {"message": "PDF data saved successfully"}
