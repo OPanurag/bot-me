@@ -1,6 +1,8 @@
 # BOT-ME: AI Assistant
 
-BOT-ME is a chatbot that answers questions based on predefined data from a PDF. This project uses Streamlit for the frontend, with a backend API that processes the user's query. The backend can be configured to use either GPT or Gemini for responses.
+BOT-ME is a chatbot that answers questions based on predefined data from a PDF. 
+This project uses Streamlit for the frontend, with a backend API that processes the user's query. 
+The backend can be configured to use either GPT or Gemini for responses.
 
 ## Requirements
 
