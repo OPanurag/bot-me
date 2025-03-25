@@ -1,7 +1,8 @@
 import streamlit as st
 import requests
 
-st.title("BOT-ME: Chat with Your AI")
+st.title("AI Chatbot : General Questions")
+st.write("This is a custom bot that can answer questions based on the data from PDF you provide.")
 
 st.write("Upload a PDF to train the bot on your data.")
 
