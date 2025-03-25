@@ -58,7 +58,7 @@ def generate_response(question: str):
 
 
 # Function to convert text response to speech
-def text_to_speech(text, filename="output.mp3"):
+def text_to_speech(text, filename="data/output.mp3"):
     tts = gTTS(text=text, lang="en")
     tts.save(filename)
     return filename
@@ -75,7 +75,7 @@ async def ask(data: dict):
     answer = generate_response(question)
 
     # Convert response to speech
-    audio_file = text_to_speech(answer, "backend/output.mp3")
+    audio_file = text_to_speech(answer, "backend/data/output.mp3")
 
     # Return both text and audio
     return JSONResponse(content={"response": answer, "audio_url": "/audio"})
@@ -83,4 +83,4 @@ async def ask(data: dict):
 
 @app.get("/audio")
 async def get_audio():
-    return FileResponse("backend/output.mp3", media_type="audio/mpeg")
+    return FileResponse("backend/data/output.mp3", media_type="audio/mpeg")
