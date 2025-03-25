@@ -1,4 +1,3 @@
-fastapi
-uvicorn
-openai
-PyMuPDF
+fastapi==0.115.12
+fitz==0.0.1.dev2
+openai==1.68.2
