@@ -20,7 +20,7 @@ def speak(text):
 st.title("🤖 BOT-ME: AI Assistant")
 st.write("This chatbot can answer questions based on predefined data from a PDF.")
 
-# Custom CSS to remove Streamlit default containers and prevent the white rectangle
+# Custom CSS to remove Streamlit default containers
 st.markdown("""
     <style>
         /* Remove default padding and margins */
