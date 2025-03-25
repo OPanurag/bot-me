@@ -1,3 +1,3 @@
-# Config.py file for the backend
+# Config.py
 OPENAI_API_KEY = "YOU_OPENAI_API_KEY"
 GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
