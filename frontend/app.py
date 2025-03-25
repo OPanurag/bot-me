@@ -20,13 +20,19 @@ def speak(text):
 st.title("🤖 BOT-ME: AI Assistant")
 st.write("This chatbot can answer questions based on predefined data from a PDF.")
 
-# Custom CSS to style the app and ensure it has the correct layout
+# Custom CSS to remove Streamlit default containers and prevent the white rectangle
 st.markdown("""
     <style>
         /* Remove default padding and margins */
         body {
             margin: 0;
             padding: 0;
+        }
+
+        /* Remove any padding or background from Streamlit's main content */
+        .css-1v3fvcr, .css-18e3th9 {
+            background: transparent !important;
+            padding: 0 !important;
         }
 
         /* Custom styling for chat container */
@@ -43,6 +49,8 @@ st.markdown("""
             overflow-x: hidden;
             margin-top: 10px;
         }
+
+        /* Style for individual messages */
         .message {
             max-width: 70%;
             word-wrap: break-word;
@@ -53,35 +61,19 @@ st.markdown("""
             display: inline-block;
             color: black;  /* Set text color to black */
         }
+
         .user-message {
             background-color: #DCF8C6;
-            text-align: left;
-            align-self: flex-start;  /* Move user message to the right */
+            text-align: right;
+            align-self: flex-end;  /* Move user message to the right */
         }
+
         .bot-message {
             background-color: #E3E3E3;
             text-align: left;
-            align-self: flex-end;  /* Keep bot message on the left */
+            align-self: flex-start;  /* Keep bot message on the left */
         }
-        .chat-box {
-            display: flex;
-            width: 100%;
-        }
-        .chat-input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-        }
-        .send-button {
-            margin-left: 10px;
-            padding: 10px 15px;
-            border-radius: 20px;
-            background-color: #128C7E;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+
         /* Sticky question input bar */
         .input-container {
             position: fixed;
@@ -95,12 +87,14 @@ st.markdown("""
             align-items: center;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
+
         .input-container input {
             flex: 1;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 20px;
         }
+
         .input-container button {
             margin-left: 10px;
             padding: 10px 15px;
@@ -114,18 +108,26 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Chat Interface
+st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
+
+# Display the chat history with correct alignment
 for sender, message in st.session_state.chat_history:
     message_style = "user-message" if sender == "You" else "bot-message"
     st.markdown(f"""
         <div class='message {message_style}'>{message}</div>
     """, unsafe_allow_html=True)
 
+st.markdown("</div>", unsafe_allow_html=True)
+
 # Input Box with Send Button (Fixed at the Bottom)
-question = st.text_input("", key="question_input", placeholder="Type a message...", label_visibility="collapsed")
+st.markdown("<div class='input-container'>", unsafe_allow_html=True)
+question = st.text_input("Type a message...", key="question_input", placeholder="Ask something...", label_visibility="collapsed")
 if st.button("Send", key="send_button"):
     st.session_state.chat_history.append(("You", question))
     st.session_state["processing"] = True  # Show processing message
     st.rerun()  # Refresh UI immediately
+
+st.markdown("</div>", unsafe_allow_html=True)
 
 # Processing Message
 if "processing" in st.session_state and st.session_state["processing"]:
