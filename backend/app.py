@@ -1,13 +1,13 @@
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI
 import json
 from openai import OpenAI
-from process_pdf import extract_text_from_pdf
+from pdf_to_json import extract_text_from_pdf
 from config import OPENAI_API_KEY
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# Enable CORS
+# Enable CORS for frontend communication
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,31 +16,37 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# OpenAI API Client
 client = OpenAI(api_key=OPENAI_API_KEY)
 
-# Load user data
-with open("user_data.json", "r", encoding="utf-8") as f:
+# Extract and save PDF data (No user upload required)
+PDF_PATH = "backend/data/profile.pdf"
+JSON_PATH = "backend/user_data.json"
+
+text_data = extract_text_from_pdf(PDF_PATH)
+with open(JSON_PATH, "w", encoding="utf-8") as f:
+    json.dump({"data": text_data}, f)
+
+# Load the saved JSON data
+with open(JSON_PATH, "r", encoding="utf-8") as f:
     user_data = json.load(f)
 
 def generate_response(question):
-    """Generate response using ChatGPT API."""
-    prompt = f"Based on this data: {user_data}, answer this: {question}"
-    response = client.Completion.create(
-        model="gpt-3.5-turbo",
-        prompt=prompt,
+    """Generate response using OpenAI ChatGPT API."""
+    prompt = f"Based on this data: {user_data['data']}, answer this: {question}"
+    response = client.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
         max_tokens=150
     )
-    return response.choices[0].text.strip()
+    return response.choices[0].message.content.strip()
+
+@app.get("/")
+def read_root():
+    return {"message": "Chatbot API is running!"}
 
 @app.post("/ask")
 async def ask(data: dict):
     question = data.get("question", "")
     answer = generate_response(question)
     return {"response": answer}
-
-@app.post("/upload-pdf")
-async def upload_pdf(file: UploadFile = File(...)):
-    text = extract_text_from_pdf(file.file)
-    with open("user_data.json", "w", encoding="utf-8") as f:
-        json.dump({"data": text}, f)
-    return {"message": "PDF data saved successfully"}
