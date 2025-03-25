@@ -2,8 +2,8 @@ import fitz  # PyMuPDF
 import json
 import os
 
-PDF_PATH = "data/profile.pdf"
-JSON_PATH = "user_data.json"
+PDF_PATH = "backend/data/profile.pdf"
+JSON_PATH = "backend/user_data.json"
 
 def extract_text_from_pdf(pdf_path):
     doc = fitz.open(pdf_path)
