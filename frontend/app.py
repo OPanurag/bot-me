@@ -28,7 +28,7 @@ if st.button("Send"):
         # Step 1: Append user's question
         st.session_state.chat_history.append(("You", question))
         st.session_state["processing"] = True  # Show processing message
-        st.experimental_rerun()  # Refresh UI immediately
+        st.rerun()  # Refresh UI immediately
 
 # Show chat history first
 st.write("---")
