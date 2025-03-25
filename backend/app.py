@@ -3,15 +3,11 @@ import json
 from backend.pdf_to_json import extract_text_from_pdf
 from backend.config import OPENAI_API_KEY
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
 
 import openai
 import time
 from openai import OpenAI
 from openai._exceptions import RateLimitError, APIConnectionError
-
-from gtts import gTTS
-import os
 
 app = FastAPI()
 
@@ -57,13 +53,6 @@ def generate_response(question: str):
         return f"An unexpected error occurred: {str(e)}"
 
 
-# Function to convert text response to speech
-def text_to_speech(text, filename="data/output.mp3"):
-    tts = gTTS(text=text, lang="en")
-    tts.save(filename)
-    return filename
-
-
 @app.get("/")
 def read_root():
     return {"message": "Chatbot API is running!"}
@@ -73,14 +62,4 @@ def read_root():
 async def ask(data: dict):
     question = data.get("question", "")
     answer = generate_response(question)
-
-    # Convert response to speech
-    audio_file = text_to_speech(answer, "backend/data/output.mp3")
-
-    # Return both text and audio
-    return JSONResponse(content={"response": answer, "audio_url": "/audio"})
-
-
-@app.get("/audio")
-async def get_audio():
-    return FileResponse("backend/data/output.mp3", media_type="audio/mpeg")
+    return {"response": answer}  # Return only text response
