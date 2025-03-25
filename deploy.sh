@@ -5,6 +5,9 @@ set -e
 
 echo "Starting deployment..."
 
+echo "Activating virtual environment..."
+source venv/bin/activate
+
 # Navigate to backend and deploy
 echo "Deploying Backend..."
 cd backend
