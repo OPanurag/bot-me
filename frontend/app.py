@@ -143,6 +143,7 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 # Replace the localhost URL with your Render backend URL
 BACKEND_URL = "https://bot-me-backend.onrender.com"
+# BACKEND_URL = "http://localhost:8000"
 
 # Processing Message
 if "processing" in st.session_state and st.session_state["processing"]:
