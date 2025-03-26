@@ -20,20 +20,14 @@ if "chat_history" not in st.session_state:
 #     threading.Thread(target=run, daemon=True).start()
 
 def speak(text):
-    def run():
-        engine = pyttsx3.init(driverName="espeak")  # Explicitly specify driver
-        engine.say(text)
-        engine.runAndWait()
-    threading.Thread(target=run, daemon=True).start()
-
-# def speak(text):
-#     try:
-#         tts = gTTS(text=text, lang="en")
-#         with tempfile.NamedTemporaryFile(delete=True) as fp:
-#             tts.save(fp.name)
-#             os.system(f"mpg123 {fp.name}")  # Requires mpg123 package
-#     except Exception as e:
-#         st.error(f"Speech synthesis failed: {e}")
+    try:
+        tts = gTTS(text=text, lang="en")
+        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+        tts.save(temp_file.name)
+        st.audio(temp_file.name, format="audio/mp3")  # Play audio in Streamlit
+        os.remove(temp_file.name)  # Delete file after playing
+    except Exception as e:
+        st.error(f"Speech synthesis failed: {e}")
 
 # Title and Description
 st.title("🤖 BOT-ME: AI Assistant")
