@@ -10,7 +10,7 @@ Follow these steps to set up and run the project locally.
 
 ### **1️⃣ Clone the Repository**
 ```bash
-git clone https://github.com/your-username/bot-me.git
+git clone https://github.com/OPanurag/bot-me.git
 cd bot-me
 ```
 
