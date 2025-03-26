@@ -173,6 +173,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-config.py
 *.mp3
-backend/config.py
