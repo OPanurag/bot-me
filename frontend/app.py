@@ -129,13 +129,16 @@ if st.button("Send", key="send_button"):
 
 st.markdown("</div>", unsafe_allow_html=True)
 
+# Replace the localhost URL with your Render backend URL
+BACKEND_URL = "https://bot-me-backend.onrender.com"
+
 # Processing Message
 if "processing" in st.session_state and st.session_state["processing"]:
     with st.spinner("🤖 BOT-ME is thinking..."):
         time.sleep(2)  # Simulate processing delay
 
         # Fetch response from backend
-        response = requests.post("http://localhost:8000/ask", json={"question": question})
+        response = requests.post(f"{BACKEND_URL}/ask", json={"question": question})
         if response.status_code == 200:
             answer = response.json().get("response", "Sorry, I couldn't understand that.")
 
