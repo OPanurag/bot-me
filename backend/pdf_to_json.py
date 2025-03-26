@@ -1,4 +1,5 @@
-import fitz  # PyMuPDF
+# import fitz  # PyMuPDF
+import pymupdf as fitz
 import json
 import os
 
