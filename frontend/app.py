@@ -11,7 +11,7 @@ import os
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# # Function to speak text in a separate thread
+# Function to speak text in a separate thread
 # def speak(text):
 #     def run():
 #         engine = pyttsx3.init()
@@ -20,13 +20,20 @@ if "chat_history" not in st.session_state:
 #     threading.Thread(target=run, daemon=True).start()
 
 def speak(text):
-    try:
-        tts = gTTS(text=text, lang="en")
-        with tempfile.NamedTemporaryFile(delete=True) as fp:
-            tts.save(fp.name)
-            os.system(f"mpg123 {fp.name}")  # Requires mpg123 package
-    except Exception as e:
-        st.error(f"Speech synthesis failed: {e}")
+    def run():
+        engine = pyttsx3.init(driverName="espeak")  # Explicitly specify driver
+        engine.say(text)
+        engine.runAndWait()
+    threading.Thread(target=run, daemon=True).start()
+
+# def speak(text):
+#     try:
+#         tts = gTTS(text=text, lang="en")
+#         with tempfile.NamedTemporaryFile(delete=True) as fp:
+#             tts.save(fp.name)
+#             os.system(f"mpg123 {fp.name}")  # Requires mpg123 package
+#     except Exception as e:
+#         st.error(f"Speech synthesis failed: {e}")
 
 # Title and Description
 st.title("🤖 BOT-ME: AI Assistant")
