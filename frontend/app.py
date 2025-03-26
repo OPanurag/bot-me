@@ -12,22 +12,22 @@ if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
 # Function to speak text in a separate thread
-# def speak(text):
-#     def run():
-#         engine = pyttsx3.init()
-#         engine.say(text)
-#         engine.runAndWait()
-#     threading.Thread(target=run, daemon=True).start()
-
 def speak(text):
-    try:
-        tts = gTTS(text=text, lang="en")
-        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
-        tts.save(temp_file.name)
-        st.audio(temp_file.name, format="audio/mp3")  # Play audio in Streamlit
-        os.remove(temp_file.name)  # Delete file after playing
-    except Exception as e:
-        st.error(f"Speech synthesis failed: {e}")
+    def run():
+        engine = pyttsx3.init()
+        engine.say(text)
+        engine.runAndWait()
+    threading.Thread(target=run, daemon=True).start()
+
+# def speak(text):
+#     try:
+#         tts = gTTS(text=text, lang="en")
+#         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
+#         tts.save(temp_file.name)
+#         st.audio(temp_file.name, format="audio/mp3")  # Play audio in Streamlit
+#         os.remove(temp_file.name)  # Delete file after playing
+#     except Exception as e:
+#         st.error(f"Speech synthesis failed: {e}")
 
 # Title and Description
 st.title("🤖 BOT-ME: AI Assistant")
@@ -142,9 +142,9 @@ if st.button("Send", key="send_button"):
 
 st.markdown("</div>", unsafe_allow_html=True)
 
-# Replace the localhost URL with your Render backend URL
-BACKEND_URL = "https://bot-me-backend.onrender.com"
-# BACKEND_URL = "http://localhost:8000"
+# Backend URL for API requests
+# BACKEND_URL = "https://bot-me-backend.onrender.com"
+BACKEND_URL = "http://localhost:8000"
 
 # Processing Message
 if "processing" in st.session_state and st.session_state["processing"]:
