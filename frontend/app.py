@@ -4,6 +4,8 @@ import time
 import threading
 import pyttsx3
 from gtts import gTTS
+import tempfile
+import os
 
 # Initialize chat history
 if "chat_history" not in st.session_state:
