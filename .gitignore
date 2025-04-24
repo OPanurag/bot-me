@@ -178,4 +178,3 @@ cython_debug/
 *.json
 
 
-# backend/config.py

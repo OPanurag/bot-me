@@ -13,21 +13,44 @@ if "chat_history" not in st.session_state:
 
 # Function to speak text in a separate thread
 def speak(text):
-    def run():
-        engine = pyttsx3.init()
-        engine.say(text)
-        engine.runAndWait()
-    threading.Thread(target=run, daemon=True).start()
+    try:
+        # Create a new thread for speech synthesis
+        def run():
+            try:
+                engine = pyttsx3.init()
+                # Set properties
+                # engine.setProperty('rate', 200)  # Speed of speech
+                engine.setProperty('volume', 1.0)  # Volume (0.0 to 1.0)
+                engine.say(text)
+                engine.runAndWait()
+                # print("Speech completed successfully")
+            except Exception as e:
+                print(f"Error in speech thread: {e}")
+        
+        # Start the thread
+        speech_thread = threading.Thread(target=run, daemon=True)
+        speech_thread.start()
+        # Don't wait for the thread to complete as it might block Streamlit
+    except Exception as e:
+        st.error(f"Failed to initialize speech: {e}")
+        print(f"Speech initialization error: {e}")
 
-# def speak(text):
+# def speak_gtts(text):
 #     try:
 #         tts = gTTS(text=text, lang="en")
 #         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
 #         tts.save(temp_file.name)
 #         st.audio(temp_file.name, format="audio/mp3")  # Play audio in Streamlit
-#         os.remove(temp_file.name)  # Delete file after playing
+#         # Don't remove the file immediately to allow playback
+#         # Schedule file removal after a delay
+#         def remove_file():
+#             time.sleep(10)  # Wait 10 seconds before removing
+#             if os.path.exists(temp_file.name):
+#                 os.remove(temp_file.name)
+#         threading.Thread(target=remove_file, daemon=True).start()
 #     except Exception as e:
 #         st.error(f"Speech synthesis failed: {e}")
+#         print(f"gTTS error: {e}")
 
 # Title and Description
 st.title("🤖 BOT-ME: AI Assistant")
@@ -160,8 +183,12 @@ if "processing" in st.session_state and st.session_state["processing"]:
             st.session_state.chat_history.append(("Bot", answer))
             st.session_state["processing"] = False
 
-            # Speak the response
-            speak(answer)
+            # Try to speak the response using pyttsx3
+            try:
+                speak(answer)
+            except Exception as e:
+                print(f"Error during speech synthesis: {e}")
+                st.warning("Speech synthesis encountered an issue. Check console for details.")
         else:
             st.error("Error connecting to the backend. Please try again later.")
 
