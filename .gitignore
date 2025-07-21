@@ -177,4 +177,5 @@ cython_debug/
 *.txt
 *.json
 
+backend/config.py
 
