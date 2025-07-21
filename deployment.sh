@@ -7,6 +7,7 @@ echo "🚀 Starting deployment..."
 
 echo "🔄 Activating virtual environment..."
 source venv/bin/activate
+pip install --upgrade pip
 
 echo "📦 Installing common requirements..."
 pip install -r requirements.txt
